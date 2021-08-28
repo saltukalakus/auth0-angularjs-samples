@@ -6,13 +6,13 @@
     "start": "node server.js",
     "test": "npm-check"
   },
-  "author": "Auth0",
+  "author": "Saltuk Alakus",
   "license": "MIT",
   "dependencies": {
     "@uirouter/angularjs": "^1.0.5",
     "angular": "^1.6.1",
-    "angular-auth0": "^3.0.0",
-    "auth0-js": "^9.11.2",
+    "angular-auth0-spa-js": "^4.0.7",
+    "@auth0/auth0-spa-js": "^1.17.0",
     "bootstrap": "^3.4.1",
     "express": "^4.14.0"
   },

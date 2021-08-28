@@ -34,12 +34,11 @@
         controllerAs: 'vm'
       });
 
-    // Initialization for the angular-auth0 library
+    // Initialization for the angular-auth0-spa-js library
     angularAuth0Provider.init({
-      clientID: AUTH0_CLIENT_ID,
+      client_id: AUTH0_CLIENT_ID,
       domain: AUTH0_DOMAIN,
-      responseType: 'token id_token',
-      redirectUri: AUTH0_CALLBACK_URL,
+      redirect_uri: AUTH0_CALLBACK_URL,
       scope: 'openid'
     });
 

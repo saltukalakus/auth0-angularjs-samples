@@ -23,43 +23,41 @@
     }
 
     function login() {
-      angularAuth0.authorize();
+      angularAuth0.loginWithRedirect();
     }
 
     function handleAuthentication() {
-      angularAuth0.parseHash(function(err, authResult) {
-        if (authResult && authResult.accessToken && authResult.idToken) {
-          localLogin(authResult);
-          $state.go('home');
-        } else if (err) {
-          $timeout(function() {
-            $state.go('home');
-          });
-          console.log(err);
-          alert('Error: ' + err.error + '. Check the console for further details.');
-        }
+      angularAuth0.handleRedirectCallback().then(redirectResult => {
+        angularAuth0.getIdTokenClaims().then(id_token => {
+          expiresAt = new Date(id_token.exp * 1000);
+          console.log(expiresAt);
+          idToken = id_token.__raw;
+          angularAuth0.getTokenSilently().then(result => {
+            console.log("getTokenSilently: " + result);
+            accessToken = result;
+            angularAuth0.isAuthenticated().then(
+              result => {
+                console.log("isAuthenticated: " + result);
+                if (result) {
+                  localStorage.setItem('isLoggedIn', 'true');
+                } else {
+                  localStorage.setItem('isLoggedIn', 'false');
+                }
+                $state.go('home');
+              }
+            )
+          })
+        });
+      }).catch(error => {
+        console.log(error);
       });
     }
 
-    function localLogin(authResult) {
-      // Set isLoggedIn flag in localStorage
-      localStorage.setItem('isLoggedIn', 'true');
-      // Set the time that the access token will expire at
-      expiresAt = (authResult.expiresIn * 1000) + new Date().getTime();
-      accessToken = authResult.accessToken;
-      idToken = authResult.idToken;
-    }
-
-    function renewTokens() {
-      angularAuth0.checkSession({},
-        function(err, result) {
-          if (err) {
-            console.log(err);
-          } else {
-            localLogin(result);
-          }
-        }
-      );
+    function renewAccessToken() {
+      angularAuth0.getTokenSilently().then(result => {
+          console.log("getTokenSilently: " + result);
+          accessToken = result;
+      });
     }
 
     function logout() {
@@ -90,7 +88,7 @@
       handleAuthentication: handleAuthentication,
       logout: logout,
       isAuthenticated: isAuthenticated,
-      renewTokens: renewTokens
+      renewAccessToken: renewAccessToken
     }
   }
 })();

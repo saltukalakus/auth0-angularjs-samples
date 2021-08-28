@@ -10,11 +10,14 @@
 
   function run(authService) {
 
-    if (localStorage.getItem('isLoggedIn') === 'true') {
-      authService.renewTokens();
+    console.log("======authService=======");
+    if (authService.isAuthenticated() === 'true') {
+      console.log("is logged in true");
+      authService.renewAccessToken();
     } else {
       // Handle the authentication
       // result in the hash
+      console.log("is logged in false");
       authService.handleAuthentication();
     }
   }
